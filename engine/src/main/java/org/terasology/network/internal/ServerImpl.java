@@ -133,6 +133,11 @@ public class ServerImpl implements Server {
     }
 
     @Override
+    public String getRemoteAddress() {
+
+    }
+
+    @Override
     public ServerInfoMessage getInfo() {
         return new ServerInfoMessageImpl(serverInfo);
     }

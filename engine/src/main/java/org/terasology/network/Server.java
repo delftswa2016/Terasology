@@ -15,6 +15,7 @@
  */
 package org.terasology.network;
 
+import org.jboss.netty.channel.Channel;
 import org.terasology.entitySystem.Component;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.Event;
@@ -26,6 +27,8 @@ import org.terasology.world.chunks.remoteChunkProvider.ChunkReadyListener;
 public interface Server extends ChunkReadyListener {
 
     EntityRef getClientEntity();
+
+    String getRemoteAddress();
 
     ServerInfoMessage getInfo();
 
