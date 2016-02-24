@@ -141,7 +141,7 @@ public class ServerImpl implements Server {
         // Cast to InetSocketAddress to retrieve remote address
         InetSocketAddress inetSocketAddress = (InetSocketAddress) socketAddress;
 
-        return inetSocketAddress.getHostName()+"-"+inetSocketAddress.getAddress().getHostAddress()+"-"+inetSocketAddress.getPort();
+        return inetSocketAddress.getHostName() + "-" + inetSocketAddress.getAddress().getHostAddress() + "-" + inetSocketAddress.getPort();
     }
 
     @Override

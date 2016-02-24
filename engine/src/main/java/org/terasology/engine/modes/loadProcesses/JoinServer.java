@@ -37,7 +37,6 @@ import org.terasology.network.Server;
 import org.terasology.network.ServerInfoMessage;
 import org.terasology.world.internal.WorldInfo;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -86,8 +85,11 @@ public class JoinServer implements LoadProcess {
             ServerInfoMessage serverInfo = networkSystem.getServer().getInfo();
 
             // If no GameName, use Server IP Address
-            if(serverInfo.getGameName().length()>0) gameManifest.setTitle(serverInfo.getGameName());
-            else gameManifest.setTitle(server.getRemoteAddress());
+            if (serverInfo.getGameName().length() > 0) {
+                gameManifest.setTitle(serverInfo.getGameName());
+            } else {
+                gameManifest.setTitle(server.getRemoteAddress());
+            }
 
             for (WorldInfo worldInfo : serverInfo.getWorldInfoList()) {
                 gameManifest.addWorld(worldInfo);

@@ -15,7 +15,6 @@
  */
 package org.terasology.network;
 
-import org.jboss.netty.channel.Channel;
 import org.terasology.entitySystem.Component;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.Event;
