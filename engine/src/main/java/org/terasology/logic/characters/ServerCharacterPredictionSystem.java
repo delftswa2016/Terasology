@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 MovingBlocks
+ * Copyright 2016 MovingBlocks
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,8 +43,6 @@ import org.terasology.world.WorldProvider;
 
 import java.util.Map;
 
-/**
- */
 @RegisterSystem(RegisterMode.AUTHORITY)
 @Share(PredictionSystem.class)
 public class ServerCharacterPredictionSystem extends BaseComponentSystem implements UpdateSubscriberSystem, PredictionSystem {
@@ -133,6 +131,18 @@ public class ServerCharacterPredictionSystem extends BaseComponentSystem impleme
         } else {
             logger.warn("Received too much input from {}, dropping input.", entity);
         }
+    }
+
+    @ReceiveEvent(components = {CharacterMovementComponent.class, LocationComponent.class})
+    public void onTeleport(CharacterTeleportEvent event, EntityRef entity) {
+        CircularBuffer<CharacterStateEvent> stateBuffer = characterStates.get(entity);
+        CharacterStateEvent lastState = stateBuffer.getLast();
+        CharacterStateEvent newState = new CharacterStateEvent(lastState);
+        newState.setPosition(new Vector3f(event.getTargetPosition()));
+        newState.setTime(time.getGameTimeInMs());
+        stateBuffer.add(newState);
+        characterMovementSystemUtility.setToState(entity, newState);
+
     }
 
     private CharacterStateEvent createInitialState(EntityRef entity) {

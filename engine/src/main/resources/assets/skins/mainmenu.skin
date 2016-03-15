@@ -35,8 +35,15 @@
             "font": "NotoSans-Regular-Large",
             "text-color": "F0F0F0FF"
         },
+         "subtitle": {
+            "font": "NotoSans-Regular-Medium",
+            "text-color": "F0F0F0FF"
+        },
         "error": {
             "text-color": "FF4444FF"
+        },
+        "warning": {
+            "text-color": "FF4500FF"
         },
         "highlight": {
             "text-color": "FFFF00FF",

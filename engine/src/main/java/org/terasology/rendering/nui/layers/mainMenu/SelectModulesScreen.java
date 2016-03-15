@@ -43,9 +43,11 @@ import org.terasology.rendering.nui.WidgetUtil;
 import org.terasology.rendering.nui.databinding.Binding;
 import org.terasology.rendering.nui.databinding.ReadOnlyBinding;
 import org.terasology.rendering.nui.itemRendering.AbstractItemRenderer;
+import org.terasology.rendering.nui.widgets.TextChangeEventListener;
 import org.terasology.rendering.nui.widgets.UIButton;
 import org.terasology.rendering.nui.widgets.UILabel;
 import org.terasology.rendering.nui.widgets.UIList;
+import org.terasology.rendering.nui.widgets.UIText;
 import org.terasology.world.generator.internal.WorldGeneratorManager;
 
 import java.io.IOException;
@@ -82,6 +84,7 @@ public class SelectModulesScreen extends CoreScreenLayer {
 
     private Map<Name, ModuleSelectionInfo> modulesLookup;
     private List<ModuleSelectionInfo> sortedModules;
+    private List<ModuleSelectionInfo> allSortedModules;
     private DependencyResolver resolver;
     private ModuleListDownloader metaDownloader;
     private boolean needsUpdate = true;
@@ -119,6 +122,7 @@ public class SelectModulesScreen extends CoreScreenLayer {
         }
 
         Collections.sort(sortedModules, moduleInfoComparator);
+        allSortedModules = new ArrayList<>(sortedModules);
 
         final UIList<ModuleSelectionInfo> moduleList = find("moduleList", UIList.class);
         if (moduleList != null) {
@@ -163,6 +167,22 @@ public class SelectModulesScreen extends CoreScreenLayer {
                 }
             });
 
+            UIText moduleSearch = find("moduleSearch", UIText.class);
+            if (moduleSearch != null) {
+                    moduleSearch.subscribe(new TextChangeEventListener() {
+                            @Override
+                            public void onTextChange(String oldText, String newText) {
+                                    sortedModules.clear();
+                                    for (ModuleSelectionInfo m : allSortedModules) {
+                                            if (m.getMetadata().getDisplayName().toString().toLowerCase().contains(newText.toLowerCase())) {
+                                                    sortedModules.add(m);
+                                                }
+                                        }
+                                    moduleList.update(0.1f);
+                                }
+                        });
+                }
+
             final Binding<ModuleMetadata> moduleInfoBinding = new ReadOnlyBinding<ModuleMetadata>() {
                 @Override
                 public ModuleMetadata get() {
@@ -195,7 +215,7 @@ public class SelectModulesScreen extends CoreScreenLayer {
                         if (sel == null) {
                             return "";
                         }
-                        return sel.isPresent() ? sel.getMetadata().getVersion().toString() : "none";
+                        return sel.isPresent() ? sel.getMetadata().getVersion().toString() : translationSystem.translate("${engine:menu#module-version-installed-none}");
                     }
                 });
             }
@@ -247,17 +267,17 @@ public class SelectModulesScreen extends CoreScreenLayer {
                         ModuleSelectionInfo info = moduleList.getSelection();
                         if (info != null) {
                             if (isSelectedGameplayModule(info)) {
-                                return "Active gameplay";
+                                return translationSystem.translate("${engine:menu#module-status-activegameplay}");
                             } else if (info.isSelected() && info.isExplicitSelection()) {
-                                return "Activated";
+                                return translationSystem.translate("${engine:menu#module-status-activated}");
                             } else if (info.isSelected()) {
-                                return "Dependency";
+                                return translationSystem.translate("${engine:menu#module-status-dependency}");
                             } else if (!info.isPresent()) {
-                                return "Not present";
+                                return translationSystem.translate("${engine:menu#module-status-notpresent}");
                             } else if (info.isValidToSelect()) {
-                                return "Available";
+                                return translationSystem.translate("${engine:menu#module-status-available}");
                             } else {
-                                return "Incompatible or unresolved dependencies";
+                                return translationSystem.translate("${engine:menu#module-status-error}");
                             }
                         }
                         return "";
@@ -291,12 +311,12 @@ public class SelectModulesScreen extends CoreScreenLayer {
                     public String get() {
                         if (moduleList.getSelection() != null) {
                             if (moduleList.getSelection().isExplicitSelection()) {
-                                return "Deactivate";
+                                return translationSystem.translate("${engine:menu#deactivate-module}");
                             } else {
-                                return "Activate";
+                                return translationSystem.translate("${engine:menu#activate-module}");
                             }
                         }
-                        return "Activate";  // button should be disabled
+                        return translationSystem.translate("${engine:menu#activate-module}");  // button should be disabled
                     }
                 });
             }
@@ -316,9 +336,9 @@ public class SelectModulesScreen extends CoreScreenLayer {
                     public String get() {
                         ModuleSelectionInfo info = moduleList.getSelection();
                         if (info != null && !info.isPresent()) {
-                            return "Download";
+                            return translationSystem.translate("${engine:menu#download-module}");
                         } else {
-                            return "Update";
+                            return translationSystem.translate("${engine:menu#update-module}");
                         }
                     }
                 });

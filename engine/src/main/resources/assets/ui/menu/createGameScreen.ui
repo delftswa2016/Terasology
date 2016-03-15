@@ -33,6 +33,20 @@
                 }
             },
             {
+                "type" : "UILabel",
+                "id" : "gameTypeTitle",
+                "family" : "subtitle",
+                "text": "${engine:menu#select-singleplayer-game-sub-title}",
+                "layoutInfo" : {
+                    "height" : 30,
+                    "position-horizontal-center" : {},
+                    "position-top" : {
+                        "target" : "BOTTOM",
+                        "widget" : "subtitle"
+                    }
+                }
+            },
+            {
                 "type" : "UIBox",
                 "content" : {
                     "type" : "ColumnLayout",
@@ -69,9 +83,18 @@
                                     }
                                 },
                                 {
-                                    "type" : "UIButton",
-                                    "text" : "${engine:menu#select-modules}",
-                                    "id" : "mods"
+                                    "type" : "ColumnLayout",
+                                    "contents" : [
+                                        {
+                                            "type" : "UIButton",
+                                            "text" : "${engine:menu#select-modules}",
+                                            "id" : "mods"
+                                        },
+                                        {
+                                            "type" : "UILabel",
+                                            "text" : "${engine:menu#advanced-usage}"
+                                        }
+                                    ]
                                 }
                             ]
                         },
@@ -139,7 +162,7 @@
                     "position-top" : {
                         "target" : "BOTTOM",
                         "offset" : 16,
-                        "widget" : "subtitle"
+                        "widget" : "gameTypeTitle"
                     }
                 }
             },

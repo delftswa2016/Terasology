@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 MovingBlocks
+ * Copyright 2016 MovingBlocks
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,20 +19,14 @@ package org.terasology.logic.players;
 import com.google.common.collect.Lists;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.entitySystem.entity.lifecycleEvents.BeforeDeactivateComponent;
-import org.terasology.entitySystem.entity.lifecycleEvents.OnActivatedComponent;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.entitySystem.systems.UpdateSubscriberSystem;
 import org.terasology.logic.characters.CharacterComponent;
-import org.terasology.logic.console.commandSystem.annotations.Command;
-import org.terasology.logic.console.commandSystem.annotations.CommandParam;
-import org.terasology.logic.console.commandSystem.annotations.Sender;
 import org.terasology.logic.location.Location;
 import org.terasology.logic.location.LocationComponent;
-import org.terasology.logic.permission.PermissionManager;
 import org.terasology.logic.players.event.OnPlayerSpawnedEvent;
 import org.terasology.logic.players.event.RespawnRequestEvent;
 import org.terasology.math.geom.Quat4f;
@@ -53,8 +47,6 @@ import org.terasology.world.generator.WorldGenerator;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- */
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class PlayerSystem extends BaseComponentSystem implements UpdateSubscriberSystem {
 
@@ -201,25 +193,6 @@ public class PlayerSystem extends BaseComponentSystem implements UpdateSubscribe
             SpawningClientInfo info = new SpawningClientInfo(entity, spawnPosition);
             clientsPreparingToSpawn.add(info);
         }
-    }
-
-    @Command(value = "teleport", shortDescription = "Teleports you to a location", runOnServer = true,
-            requiredPermission = PermissionManager.CHEAT_PERMISSION)
-    public String teleportCommand(@Sender EntityRef sender, @CommandParam("x") float x, @CommandParam("y") float y, @CommandParam("z") float z) {
-        ClientComponent clientComp = sender.getComponent(ClientComponent.class);
-        LocationComponent location = clientComp.character.getComponent(LocationComponent.class);
-        if (location != null) {
-            // deactivate the character to reset the CharacterPredictionSystem,
-            // which would overwrite the character location
-            clientComp.character.send(BeforeDeactivateComponent.newInstance());
-
-            location.setWorldPosition(new Vector3f(x, y, z));
-            clientComp.character.saveComponent(location);
-
-            // re-active the character
-            clientComp.character.send(OnActivatedComponent.newInstance());
-        }
-        return "Teleported to " + x + " " + y + " " + z;
     }
 
     private void spawnPlayer(EntityRef clientEntity) {
