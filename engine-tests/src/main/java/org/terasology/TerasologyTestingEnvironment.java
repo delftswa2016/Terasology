@@ -104,12 +104,12 @@ public abstract class TerasologyTestingEnvironment {
         EntitySystemSetupUtil.addReflectionBasedLibraries(context);
         EntitySystemSetupUtil.addEntityManagementRelatedClasses(context);
         engineEntityManager = context.get(EngineEntityManager.class);
-        BlockManager blockManager = context.get(BlockManager.class);
+        BlockManager methodBlockManager = context.get(BlockManager.class);
         BiomeManager biomeManager = context.get(BiomeManager.class);
 
         Path savePath = PathManager.getInstance().getSavePath("world1");
         context.put(StorageManager.class, new ReadWriteStorageManager(savePath, moduleManager.getEnvironment(),
-                engineEntityManager, blockManager, biomeManager));
+                engineEntityManager, methodBlockManager, biomeManager));
 
         componentSystemManager = new ComponentSystemManager(context);
         context.put(ComponentSystemManager.class, componentSystemManager);
